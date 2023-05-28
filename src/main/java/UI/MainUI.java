@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -63,7 +64,19 @@ public class MainUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
             case "급여기록 등록":
-                new EmployeeListUI();
+                try {
+                    new EmployeeListUI("PaymentRegister");
+                    break;
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            case "급여기록 조회":
+                try {
+                    new EmployeeListUI("PaymentList");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
         }
     }
 }

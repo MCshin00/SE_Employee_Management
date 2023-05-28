@@ -1,28 +1,53 @@
 package UI;
 
+import Control.PaymentSystem;
+import Entity.Payment;
+import Entity.User;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-public class PaymentFixUI extends JFrame {
-    public PaymentFixUI(){
+public class PaymentFixUI extends JFrame implements ActionListener {
+    Payment payment = new Payment();
+    String ID;
+    PaymentSystem paymentSystem = new PaymentSystem();
+    JTextField SalaryTextField;
+    JTextField DateTextField;
+    JLabel SalarySumLabel;
+    JLabel NetSalaryLabel;
+    JLabel Deduction1Label;
+    JLabel Deduction2Label;
+    JLabel Deduction3Label;
+    JLabel Deduction4Label;
+    JLabel DeductionSumLabel;
+    public PaymentFixUI(String[] SeeUI){
+        this.ID = SeeUI[9];
         JPanel panel1 = new JPanel();
         panel1.setLayout(null);
 
         JButton CalculateButton = new JButton("계산");
         JButton FixButton = new JButton("수정");
 
+        CalculateButton.addActionListener(this);
+        FixButton.addActionListener(this);
+
         JLabel EmployeeName = new JLabel("사원명 : ");
-        JLabel EmployeeNameLabel = new JLabel("윤지수");
+        JLabel EmployeeNameLabel = new JLabel(SeeUI[0]);
         JLabel Date = new JLabel("지급일");
-        JTextField DateTextField = new JTextField("2023-05-01");
+        DateTextField = new JTextField(SeeUI[1]);
 
         JLabel Salary = new JLabel("기본급");
-        JTextField SalaryTextField= new JTextField("5,000,000");
+        SalaryTextField= new JTextField(SeeUI[2]);
         JLabel SalarySum = new JLabel("급여계");
-        JLabel SalarySumLabel = new JLabel("5,000,000");
+        SalarySumLabel = new JLabel(SeeUI[2]);
         JLabel NetSalary = new JLabel("차감수령액");
-        JLabel NetSalaryLabel = new JLabel("4,328,650");
+        NetSalaryLabel = new JLabel(SeeUI[8]);
 
         JLabel Header1 = new JLabel("지급 항목");
         JLabel Header2 = new JLabel("지급액");
@@ -30,15 +55,20 @@ public class PaymentFixUI extends JFrame {
         JLabel Header4 = new JLabel("공제액");
 
         JLabel Deduction1 = new JLabel("고용보험");
-        JLabel Deduction1Label = new JLabel();
+        Deduction1Label = new JLabel(SeeUI[3]);
         JLabel Deduction2 = new JLabel("국민연금");
-        JLabel Deduction2Label = new JLabel();
+        Deduction2Label = new JLabel(SeeUI[4]);
         JLabel Deduction3 = new JLabel("장기요양");
-        JLabel Deduction3Label = new JLabel();
+        Deduction3Label = new JLabel(SeeUI[5]);
         JLabel Deduction4 = new JLabel("건강보험");
-        JLabel Deduction4Label = new JLabel();
+        Deduction4Label = new JLabel(SeeUI[6]);
         JLabel DeductionSum = new JLabel("공제합계");
-        JLabel DeductionSumLabel = new JLabel("");
+        DeductionSumLabel = new JLabel(SeeUI[7]);
+
+        payment.setPaymentNum(Integer.parseInt(SeeUI[10]));
+        payment.setSalary(Integer.parseInt(SalarySumLabel.getText()));
+        payment.setNetsalary(Integer.parseInt(NetSalaryLabel.getText()));
+        payment.setPaymentDate(DateTextField.getText());
 
         JLabel l1 = new JLabel();
         JLabel l2 = new JLabel();
@@ -190,6 +220,88 @@ public class PaymentFixUI extends JFrame {
         setBounds(50, 50, 700, 450);
         setLocationRelativeTo(null);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    public void ShowWarning(String ErrorMessage){
+        JOptionPane.showMessageDialog(this, ErrorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void ShowSuccess(){
+        JOptionPane.showMessageDialog(this, "수정에 성공했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public boolean Checksalary(){
+        try{
+            Integer.parseInt(SalaryTextField.getText());
+        }
+        catch (Exception exception){
+            return false;
+        }
+        return true;
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()){
+            case "계산":
+                int salary;
+                int[] calcresult;
+                if (Checksalary()){
+                    try {
+                        salary = Integer.parseInt(SalaryTextField.getText());
+                        calcresult = paymentSystem.Payment_Calculate(salary);
+                        SalarySumLabel.setText(SalaryTextField.getText());
+                        Deduction1Label.setText(Integer.toString(calcresult[3]));
+                        Deduction2Label.setText(Integer.toString(calcresult[0]));
+                        Deduction3Label.setText(Integer.toString(calcresult[2]));
+                        Deduction4Label.setText(Integer.toString(calcresult[1]));
+                        DeductionSumLabel.setText(Integer.toString(calcresult[4]));
+                        NetSalaryLabel.setText(Integer.toString(salary-calcresult[4]));
+
+                        payment.setSalary(Integer.parseInt(SalarySumLabel.getText()));
+                        payment.setNetsalary(Integer.parseInt(NetSalaryLabel.getText()));
+                        payment.setPaymentDate(DateTextField.getText());
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    break;
+                }
+                else {
+                    if (SalaryTextField.getText().isEmpty()){
+                        ShowWarning("기본급 항목이 입력되지 않았습니다.");
+                    }
+                    else {
+                        ShowWarning("올바른 값을 입력하세요.");
+                    }
+                    break;
+                }
+
+            case "수정" :
+                boolean fixResult;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                sdf.setLenient(false);
+
+                try {
+                    sdf.parse(DateTextField.getText());
+                } catch (ParseException ex) {
+                    ShowWarning("날짜 형식이 잘못되었습니다.");
+                    break;
+                }
+
+                try {
+                    fixResult = paymentSystem.Payment_fix(payment, User.CurrentUserID, this.ID);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                if (fixResult) {
+                    ShowSuccess();
+                }
+                else {
+                    ShowWarning("잠시 후 다시 시도하세요.");
+                }
+                dispose();
+                break;
+        }
     }
 }

@@ -1,44 +1,71 @@
 package UI;
 
+import Control.PaymentSystem;
+import Entity.Payment;
+import Entity.User;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
-public class PaymentSeeUI extends JFrame {
-    public PaymentSeeUI(){
+public class PaymentSeeUI extends JFrame implements ActionListener {
+    Payment payment;
+    String ID;
+    PaymentSystem paymentSystem = new PaymentSystem();
+    JLabel Deduction1Label;
+    JLabel Deduction2Label;
+    JLabel Deduction3Label;
+    JLabel Deduction4Label;
+    JLabel DeductionSumLabel;
+    JLabel EmployeeNameLabel;
+    JLabel DateLabel;
+
+    public PaymentSeeUI(String PaymentNum, String PaymentDate, String ID, String Name) throws SQLException, InterruptedException {
+        this.ID = ID;
         JPanel panel1 = new JPanel();
         panel1.setLayout(null);
+
+        PaymentSystem paymentSystem = new PaymentSystem();
+        payment = paymentSystem.Payment_see(Integer.parseInt(PaymentNum), User.CurrentUserID);
 
         JButton FixButton = new JButton("수정");
         JButton DeleteButton = new JButton("삭제");
 
+        FixButton.addActionListener(this);
+        DeleteButton.addActionListener(this);
+
         JLabel EmployeeName = new JLabel("사원명 : ");
-        JLabel EmployeeNameLabel = new JLabel("윤지수");
+        EmployeeNameLabel = new JLabel(Name);
         JLabel Date = new JLabel("지급일");
-        JLabel DateLabel = new JLabel("2023-05-01");
+        DateLabel = new JLabel(PaymentDate);
 
         JLabel Salary = new JLabel("기본급");
-        JLabel SalaryLabel= new JLabel("5,000,000");
+        JLabel SalaryLabel= new JLabel(Integer.toString(payment.getSalary()));
         JLabel SalarySum = new JLabel("급여계");
-        JLabel SalarySumLabel = new JLabel("5,000,000");
+        JLabel SalarySumLabel = new JLabel(Integer.toString(payment.getSalary()));
         JLabel NetSalary = new JLabel("차감수령액");
-        JLabel NetSalaryLabel = new JLabel("4,328,650");
+        JLabel NetSalaryLabel = new JLabel(Integer.toString(payment.getNetsalary()));
 
         JLabel Header1 = new JLabel("지급 항목");
         JLabel Header2 = new JLabel("지급액");
         JLabel Header3 = new JLabel("공제 항목");
         JLabel Header4 = new JLabel("공제액");
 
+        int[] calcresult = paymentSystem.Payment_Calculate(payment.getSalary());
+
         JLabel Deduction1 = new JLabel("고용보험");
-        JLabel Deduction1Label = new JLabel();
+        Deduction1Label = new JLabel(Integer.toString(calcresult[3]));
         JLabel Deduction2 = new JLabel("국민연금");
-        JLabel Deduction2Label = new JLabel();
+        Deduction2Label = new JLabel(Integer.toString(calcresult[0]));
         JLabel Deduction3 = new JLabel("장기요양");
-        JLabel Deduction3Label = new JLabel();
+        Deduction3Label = new JLabel(Integer.toString(calcresult[2]));
         JLabel Deduction4 = new JLabel("건강보험");
-        JLabel Deduction4Label = new JLabel();
+        Deduction4Label = new JLabel(Integer.toString(calcresult[1]));
         JLabel DeductionSum = new JLabel("공제합계");
-        JLabel DeductionSumLabel = new JLabel("");
+        DeductionSumLabel = new JLabel(Integer.toString(calcresult[4]));
 
         JLabel l1 = new JLabel();
         JLabel l2 = new JLabel();
@@ -191,6 +218,26 @@ public class PaymentSeeUI extends JFrame {
         setBounds(50, 50, 700, 450);
         setLocationRelativeTo(null);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case "수정":
+                new PaymentFixUI(new String[]{EmployeeNameLabel.getText(), DateLabel.getText(), Integer.toString(payment.getSalary()), Deduction1Label.getText(), Deduction2Label.getText(),
+                        Deduction3Label.getText(), Deduction4Label.getText(), DeductionSumLabel.getText(),Integer.toString(payment.getNetsalary()),
+                        this.ID, Integer.toString(payment.getPaymentNum())});
+                break;
+
+            case "삭제":
+                try {
+                    paymentSystem.Payment_delete(payment.getPaymentNum(), User.CurrentUserID);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                JOptionPane.showMessageDialog(this, "삭제에 성공했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+                break;
+        }
     }
 }

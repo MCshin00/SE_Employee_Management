@@ -5,43 +5,61 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.SQLException;
 
-public class EmployeeListUI extends JFrame {
+import Entity.EmployeeList;
+import Entity.Employee;
+
+public class EmployeeListUI extends JFrame implements ActionListener {
+    String calledUI;
     JTable EmployeeJTable;
     JPanel panel = new JPanel();
     JLabel EmployeenameLabel = new JLabel("사원명 : ");
     JTextField EmployeenameTextField = new JTextField(5);
-    JButton SerchButton = new JButton("검색");
-    public EmployeeListUI() {
+    JButton SearchButton = new JButton("검색");
+    String header[] = {"ID", "이름"};
+    DefaultTableModel model = new DefaultTableModel(header, 0){
+        public boolean isCellEditable(int row, int column) {
+            if (column >= 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    };
+    EmployeeList employeeList;
+    public EmployeeListUI(String calledUI) throws SQLException {
+        this.calledUI = calledUI;
+        SearchButton.addActionListener(this);
+        MyMouseListener listener = new MyMouseListener();
         panel.setLayout(null);
 
-        String header[] = {"ID", "이름"};
-        String contents[][] = {{"apple", "윤지수"}, {"banana", "신민철"}};
-        DefaultTableModel model = new DefaultTableModel(contents, header){
-            public boolean isCellEditable(int row, int column) {
-                if (column >= 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
+        employeeList = new EmployeeList();
+        Employee[] employeeArray = employeeList.getEmployeeArray();
+
+        for(int i=0; i<employeeArray.length; i++){
+            if (employeeArray[i] == null) {break;}
+            model.addRow(new Object[]{employeeArray[i].getID(),employeeArray[i].getName()});
+        }
+
         EmployeeJTable = new JTable(model);
+        EmployeeJTable.addMouseListener(listener);
         EmployeeJTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane jsp = new JScrollPane(EmployeeJTable);
 
-        /*JTable EmployeeJTable = new JTable(emex, header);
-        */
-
         EmployeenameLabel.setBounds(37, 25, 70, 25);
         EmployeenameTextField.setBounds(100, 25, 140, 25);
-        SerchButton.setBounds(290, 25, 140, 25);
+        SearchButton.setBounds(290, 25, 140, 25);
         jsp.setBounds(23, 80, 420, 250);
 
 
         panel.add(EmployeenameLabel);
         panel.add(EmployeenameTextField);
-        panel.add(SerchButton);
+        panel.add(SearchButton);
         panel.add(jsp);
 
         add(panel);
@@ -51,6 +69,59 @@ public class EmployeeListUI extends JFrame {
         setBounds(50, 50, 480, 400);
         setLocationRelativeTo(null);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()){
+            case "검색":
+                model.setNumRows(0);
+                String name = EmployeenameTextField.getText();
+                try {
+                    employeeList = new EmployeeList(name);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                Employee[] employeeArray = employeeList.getEmployeeArray();
+                for(int i=0; i<employeeArray.length; i++){
+                    if (employeeArray[i] == null) {break;}
+                    model.addRow(new Object[]{employeeArray[i].getID(),employeeArray[i].getName()});
+                }
+        }
+    }
+    class MyMouseListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2){
+                int row = EmployeeJTable.getSelectedRow();
+                String ID = EmployeeJTable.getModel().getValueAt(row, 0).toString();
+                String Name = EmployeeJTable.getModel().getValueAt(row, 1).toString();
+                switch (calledUI){
+                    case "PaymentRegister" :
+                        new PaymentRegisterUI(ID, Name);
+                        dispose();
+                        break;
+
+                    case "PaymentList" :
+                        try {
+                            new PaymentListUI(ID, Name);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        dispose();
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {}
+        @Override
+        public void mouseReleased(MouseEvent e) {}
+
+        @Override
+        public void mouseEntered(MouseEvent e) {}
+        @Override
+        public void mouseExited(MouseEvent e) {}
     }
 }

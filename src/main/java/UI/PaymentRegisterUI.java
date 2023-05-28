@@ -3,26 +3,53 @@ package UI;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-public class PaymentRegisterUI extends JFrame {
-    public PaymentRegisterUI(){
+import Control.PaymentSystem;
+import Entity.Payment;
+import Entity.User;
+
+public class PaymentRegisterUI extends JFrame implements ActionListener {
+    String EmployeeID;
+    String EmployeeName;
+    Payment payment = new Payment();
+    PaymentSystem paymentSystem = new PaymentSystem();
+    JTextField SalaryTextField;
+    JTextField DateTextField;
+    JLabel SalarySumLabel;
+    JLabel NetSalaryLabel;
+    JLabel Deduction1Label;
+    JLabel Deduction2Label;
+    JLabel Deduction3Label;
+    JLabel Deduction4Label;
+    JLabel DeductionSumLabel;
+
+    public PaymentRegisterUI(String ID, String Name) {
+        this.EmployeeID = ID;
+        this.EmployeeName = Name;
         JPanel panel1 = new JPanel();
         panel1.setLayout(null);
 
         JButton CalculateButton = new JButton("계산");
         JButton RegisterButton = new JButton("등록");
+        CalculateButton.addActionListener(this);
+        RegisterButton.addActionListener(this);
 
         JLabel EmployeeName = new JLabel("사원명 : ");
-        JLabel EmployeeNameLabel = new JLabel("윤지수");
+        JLabel EmployeeNameLabel = new JLabel(this.EmployeeName);
         JLabel Date = new JLabel("지급일");
-        JTextField DateTextField = new JTextField();
+        DateTextField = new JTextField();
 
         JLabel Salary = new JLabel("기본급");
-        JTextField SalaryTextField= new JTextField();
+        SalaryTextField = new JTextField();
         JLabel SalarySum = new JLabel("급여계");
-        JLabel SalarySumLabel = new JLabel();
+        SalarySumLabel = new JLabel();
         JLabel NetSalary = new JLabel("차감수령액");
-        JLabel NetSalaryLabel = new JLabel();
+        NetSalaryLabel = new JLabel();
 
         JLabel Header1 = new JLabel("지급 항목");
         JLabel Header2 = new JLabel("지급액");
@@ -30,15 +57,15 @@ public class PaymentRegisterUI extends JFrame {
         JLabel Header4 = new JLabel("공제액");
 
         JLabel Deduction1 = new JLabel("고용보험");
-        JLabel Deduction1Label = new JLabel();
+        Deduction1Label = new JLabel();
         JLabel Deduction2 = new JLabel("국민연금");
-        JLabel Deduction2Label = new JLabel();
+        Deduction2Label = new JLabel();
         JLabel Deduction3 = new JLabel("장기요양");
-        JLabel Deduction3Label = new JLabel();
+        Deduction3Label = new JLabel();
         JLabel Deduction4 = new JLabel("건강보험");
-        JLabel Deduction4Label = new JLabel();
+        Deduction4Label = new JLabel();
         JLabel DeductionSum = new JLabel("공제합계");
-        JLabel DeductionSumLabel = new JLabel("");
+        DeductionSumLabel = new JLabel();
 
         JLabel l1 = new JLabel();
         JLabel l2 = new JLabel();
@@ -105,48 +132,48 @@ public class PaymentRegisterUI extends JFrame {
         l8.setHorizontalAlignment(JLabel.CENTER);
         l8.setBorder(new LineBorder(Color.BLACK));
 
-        EmployeeName.setBounds(30,60,70,30);
-        EmployeeNameLabel.setBounds(100,67,70,20);
-        Date.setBounds(500,60,70,30);
-        DateTextField.setBounds(580,67,70,20);
+        EmployeeName.setBounds(30, 60, 70, 30);
+        EmployeeNameLabel.setBounds(100, 67, 70, 20);
+        Date.setBounds(500, 60, 70, 30);
+        DateTextField.setBounds(580, 67, 70, 20);
 
-        Header1.setBounds(30,100,150,30);
-        Header2.setBounds(180,100,170,30);
-        Header3.setBounds(350,100,150,30);
-        Header4.setBounds(500,100,170,30);
+        Header1.setBounds(30, 100, 150, 30);
+        Header2.setBounds(180, 100, 170, 30);
+        Header3.setBounds(350, 100, 150, 30);
+        Header4.setBounds(500, 100, 170, 30);
 
-        Salary.setBounds(30,130,150,30);
-        SalaryTextField.setBounds(180,130,170,30);
-        Deduction1.setBounds(350,130,150,30);
-        Deduction1Label.setBounds(500,130,170,30);
+        Salary.setBounds(30, 130, 150, 30);
+        SalaryTextField.setBounds(180, 130, 170, 30);
+        Deduction1.setBounds(350, 130, 150, 30);
+        Deduction1Label.setBounds(500, 130, 170, 30);
 
-        l1.setBounds(30,160,150,30);
-        l2.setBounds(180,160,170,30);
-        Deduction2.setBounds(350,160,150,30);
-        Deduction2Label.setBounds(500,160,170,30);
+        l1.setBounds(30, 160, 150, 30);
+        l2.setBounds(180, 160, 170, 30);
+        Deduction2.setBounds(350, 160, 150, 30);
+        Deduction2Label.setBounds(500, 160, 170, 30);
 
-        l3.setBounds(30,190,150,30);
-        l4.setBounds(180,190,170,30);
-        Deduction3.setBounds(350,190,150,30);
-        Deduction3Label.setBounds(500,190,170,30);
+        l3.setBounds(30, 190, 150, 30);
+        l4.setBounds(180, 190, 170, 30);
+        Deduction3.setBounds(350, 190, 150, 30);
+        Deduction3Label.setBounds(500, 190, 170, 30);
 
-        l5.setBounds(30,220,150,30);
-        l6.setBounds(180,220,170,30);
-        Deduction4.setBounds(350,220,150,30);
-        Deduction4Label.setBounds(500,220,170,30);
+        l5.setBounds(30, 220, 150, 30);
+        l6.setBounds(180, 220, 170, 30);
+        Deduction4.setBounds(350, 220, 150, 30);
+        Deduction4Label.setBounds(500, 220, 170, 30);
 
-        l7.setBounds(30,250,150,30);
-        l8.setBounds(180,250,170,30);
-        DeductionSum.setBounds(350,250,150,30);
-        DeductionSumLabel.setBounds(500,250,170,30);
+        l7.setBounds(30, 250, 150, 30);
+        l8.setBounds(180, 250, 170, 30);
+        DeductionSum.setBounds(350, 250, 150, 30);
+        DeductionSumLabel.setBounds(500, 250, 170, 30);
 
-        SalarySum.setBounds(30,280,150,30);
-        SalarySumLabel.setBounds(180,280,170,30);
-        NetSalary.setBounds(350,280,150,30);
-        NetSalaryLabel.setBounds(500,280,170,30);
+        SalarySum.setBounds(30, 280, 150, 30);
+        SalarySumLabel.setBounds(180, 280, 170, 30);
+        NetSalary.setBounds(350, 280, 150, 30);
+        NetSalaryLabel.setBounds(500, 280, 170, 30);
 
-        CalculateButton.setBounds(500,350,70,30);
-        RegisterButton.setBounds(600,350,70,30);
+        CalculateButton.setBounds(500, 350, 70, 30);
+        RegisterButton.setBounds(600, 350, 70, 30);
 
         panel1.add(EmployeeName);
         panel1.add(EmployeeNameLabel);
@@ -190,6 +217,97 @@ public class PaymentRegisterUI extends JFrame {
         setBounds(50, 50, 700, 450);
         setLocationRelativeTo(null);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    public void ShowWarning(String ErrorMessage){
+        JOptionPane.showMessageDialog(this, ErrorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void ShowSuccess(){
+        JOptionPane.showMessageDialog(this, "등록에 성공했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public boolean Checksalary(){
+        try{
+           Integer.parseInt(SalaryTextField.getText());
+        }
+        catch (Exception exception){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()){
+            case "계산":
+                int salary;
+                int[] calcresult;
+                if (Checksalary()){
+                    try {
+                        salary = Integer.parseInt(SalaryTextField.getText());
+                        calcresult = paymentSystem.Payment_Calculate(salary);
+                        SalarySumLabel.setText(SalaryTextField.getText());
+                        Deduction1Label.setText(Integer.toString(calcresult[3]));
+                        Deduction2Label.setText(Integer.toString(calcresult[0]));
+                        Deduction3Label.setText(Integer.toString(calcresult[2]));
+                        Deduction4Label.setText(Integer.toString(calcresult[1]));
+                        DeductionSumLabel.setText(Integer.toString(calcresult[4]));
+                        NetSalaryLabel.setText(Integer.toString(salary-calcresult[4]));
+
+                        payment.setSalary(Integer.parseInt(SalarySumLabel.getText()));
+                        payment.setNetsalary(Integer.parseInt(NetSalaryLabel.getText()));
+                        payment.setPaymentDate(DateTextField.getText());
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    break;
+                }
+                else {
+                    if (SalaryTextField.getText().isEmpty()){
+                        ShowWarning("기본급 항목이 입력되지 않았습니다.");
+                        break;
+                    }
+                    else {
+                        ShowWarning("올바른 값을 입력하세요.");
+                        break;
+                    }
+                }
+
+            case "등록" :
+                boolean addResult;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                sdf.setLenient(false);
+
+                try{
+                    Integer.parseInt(SalarySumLabel.getText());
+                } catch (Exception ex){
+                    ShowWarning("계산이 실행되지 않았습니다.");
+                    break;
+                }
+
+                try {
+                    sdf.parse(DateTextField.getText());
+                } catch (ParseException ex) {
+                    ShowWarning("날짜 형식이 잘못되었습니다.");
+                    break;
+                }
+
+                try {
+                    addResult = paymentSystem.Payment_add(payment, User.CurrentUserID, this.EmployeeID);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                if (addResult) {
+                    ShowSuccess();
+                }
+                else {
+                    ShowWarning("잠시 후 다시 시도하세요.");
+                }
+                dispose();
+                break;
+        }
     }
 }
