@@ -2,6 +2,7 @@ package Control;
 
 import Entity.Employee;
 import Entity.Payment;
+import Entity.PaymentList;
 import Entity.User;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -57,11 +58,48 @@ public class PaymentSystem {
         return result;
     }
 
+    public PaymentList Payment_list_see(String EmployeeID) throws SQLException {
+        PaymentList paymentList = new PaymentList();
+        int i = 0;
+        String url = "jdbc:mariadb://localhost:3306/softengi_db";
+        String userName = "root";
+        String password = "c3g9h4c3";
+        String EmployeeNum;
+
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT employeeNUM FROM employee WHERE employeeID = '" + EmployeeID +"'");
+        resultSet.next();
+        EmployeeNum = resultSet.getString("employeeNUM");
+        resultSet = statement.executeQuery("SELECT * FROM payment WHERE employeeNUM = '" + EmployeeNum +"'");
+
+        while(resultSet.next()){
+            if (i==100) break;
+            Payment payment = new Payment();
+            payment.setPaymentNum(Integer.parseInt(resultSet.getString("paymentNUM")));
+            payment.setSalary(Integer.parseInt(resultSet.getString("salary")));
+            payment.setNetsalary(Integer.parseInt(resultSet.getString("netsalary")));
+            payment.setPaymentDate(resultSet.getString("payment_Date"));
+            paymentList.getPaymentArray()[i] = payment;
+            i++;
+        }
+
+        resultSet.close();
+        statement.close();
+        connection.close();
+
+        return paymentList;
+    }
+
     public boolean Payment_add(Payment payment, String UserID, String EmployeeID) throws SQLException {
         String url = "jdbc:mariadb://localhost:3306/softengi_db";
         String userName = "root";
         String password = "c3g9h4c3";
         String EmployeeNum;
+        Payment payment_todb = new Payment();
+        payment_todb.setSalary(payment.getSalary());
+        payment_todb.setNetsalary(payment.getNetsalary());
+        payment_todb.setPaymentDate(payment.getPaymentDate());
 
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
@@ -72,7 +110,7 @@ public class PaymentSystem {
             resultSet.next();
             EmployeeNum = resultSet.getString("employeeNUM");
             resultSet = statement.executeQuery("INSERT INTO payment(employeeNUM, salary, netsalary, payment_Date, userID)" + " VALUES(" + EmployeeNum + "," +
-                                                payment.getSalary() + "," + payment.getNetsalary() + ",'" + payment.getPaymentDate() + "','" + UserID + "')");
+                                                payment_todb.getSalary() + "," + payment_todb.getNetsalary() + ",'" + payment_todb.getPaymentDate() + "','" + UserID + "')");
         }
         catch (Exception e){
             System.out.println(e);
@@ -115,6 +153,10 @@ public class PaymentSystem {
         String userName = "root";
         String password = "c3g9h4c3";
         String EmployeeNum;
+        Payment payment_todb = new Payment();
+        payment_todb.setSalary(payment.getSalary());
+        payment_todb.setNetsalary(payment.getNetsalary());
+        payment_todb.setPaymentDate(payment.getPaymentDate());
 
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
@@ -125,7 +167,7 @@ public class PaymentSystem {
             resultSet.next();
             EmployeeNum = resultSet.getString("employeeNUM");
             resultSet = statement.executeQuery("UPDATE payment SET salary = " + payment.getSalary() + ", netsalary = " + payment.getNetsalary()
-                    + ", payment_Date = '" + payment.getPaymentDate() + "' WHERE paymentNUM = " + payment.getPaymentNum() + " AND employeeNUM = " + EmployeeNum + " AND userID = '" + UserID + "'");
+                    + ", payment_Date = '" + payment_todb.getPaymentDate() + "' WHERE paymentNUM = " + payment_todb.getPaymentNum() + " AND employeeNUM = " + EmployeeNum + " AND userID = '" + UserID + "'");
         }
         catch (Exception e){
             statement.close();

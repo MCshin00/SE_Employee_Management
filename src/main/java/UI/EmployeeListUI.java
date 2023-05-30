@@ -11,10 +11,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
+import Control.EmployeeSystem;
 import Entity.EmployeeList;
 import Entity.Employee;
 
 public class EmployeeListUI extends JFrame implements ActionListener {
+    EmployeeSystem employeeSystem = new EmployeeSystem();
     String calledUI;
     JTable EmployeeJTable;
     JPanel panel = new JPanel();
@@ -39,7 +41,7 @@ public class EmployeeListUI extends JFrame implements ActionListener {
         panel.setLayout(null);
 
         //사원 객체 배열 엔티티 클래스 객체 생성 및 사원목록 배열 get
-        employeeList = new EmployeeList();
+        employeeList = employeeSystem.Employee_List_see();
         Employee[] employeeArray = employeeList.getEmployeeArray();
 
         //사원 객체 배열에서 하나의 사원 객체마다 게터를 통해 ID, 이름을 받아와 JTable에 출력
@@ -80,7 +82,7 @@ public class EmployeeListUI extends JFrame implements ActionListener {
                 model.setNumRows(0);
                 String name = EmployeenameTextField.getText();
                 try {
-                    employeeList = new EmployeeList(name);
+                    employeeList = employeeSystem.Employee_List_see(name);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -101,7 +103,6 @@ public class EmployeeListUI extends JFrame implements ActionListener {
                 switch (calledUI){
                     case "PaymentRegister" :
                         new PaymentRegisterUI(ID, Name);
-                        dispose();
                         break;
 
                     case "PaymentList" :
@@ -110,7 +111,6 @@ public class EmployeeListUI extends JFrame implements ActionListener {
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         }
-                        dispose();
                         break;
                 }
             }

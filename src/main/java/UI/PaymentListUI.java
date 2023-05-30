@@ -1,5 +1,6 @@
 package UI;
 
+import Control.PaymentSystem;
 import Entity.Payment;
 import Entity.PaymentList;
 
@@ -11,11 +12,14 @@ import java.sql.SQLException;
 
 public class PaymentListUI extends JFrame {
 
+    PaymentSystem paymentSystem = new PaymentSystem();
     JTable EmployeeJTable;
     String ID;
     String Name;
     JPanel panel = new JPanel();
     String[] header = {"기록번호", "급여 지급 날짜"};
+
+    PaymentList paymentList;
     DefaultTableModel model = new DefaultTableModel(header, 0){
         public boolean isCellEditable(int row, int column) {
             if (column >= 0) {
@@ -25,14 +29,14 @@ public class PaymentListUI extends JFrame {
             }
         }
     };
-    PaymentList paymentList;
+
     public PaymentListUI(String ID, String Name) throws SQLException {
         this.ID = ID;
         this.Name = Name;
         panel.setLayout(null);
         PaymentListUI.MyMouseListener listener = new PaymentListUI.MyMouseListener();
 
-        paymentList = new PaymentList(ID);
+        paymentList = paymentSystem.Payment_list_see(this.ID);
         Payment[] paymentArray = paymentList.getPaymentArray();
 
         JLabel Employee = new JLabel("사원명 : ");
