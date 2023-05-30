@@ -38,9 +38,11 @@ public class EmployeeListUI extends JFrame implements ActionListener {
         MyMouseListener listener = new MyMouseListener();
         panel.setLayout(null);
 
+        //사원 객체 배열 엔티티 클래스 객체 생성 및 사원목록 배열 get
         employeeList = new EmployeeList();
         Employee[] employeeArray = employeeList.getEmployeeArray();
 
+        //사원 객체 배열에서 하나의 사원 객체마다 게터를 통해 ID, 이름을 받아와 JTable에 출력
         for(int i=0; i<employeeArray.length; i++){
             if (employeeArray[i] == null) {break;}
             model.addRow(new Object[]{employeeArray[i].getID(),employeeArray[i].getName()});
@@ -74,7 +76,7 @@ public class EmployeeListUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
-            case "검색":
+            case "검색": //검색 버튼 이벤트
                 model.setNumRows(0);
                 String name = EmployeenameTextField.getText();
                 try {
@@ -92,7 +94,7 @@ public class EmployeeListUI extends JFrame implements ActionListener {
     class MyMouseListener implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 2){
+            if (e.getClickCount() == 2){ //JTable 행 더블클릭 이벤트
                 int row = EmployeeJTable.getSelectedRow();
                 String ID = EmployeeJTable.getModel().getValueAt(row, 0).toString();
                 String Name = EmployeeJTable.getModel().getValueAt(row, 1).toString();

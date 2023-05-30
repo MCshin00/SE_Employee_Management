@@ -52,7 +52,6 @@ public class PaymentSystem {
             WebElement specificValueElement = driver.findElement(By.id(web_result_label[i]));
             // 합계 필드의 텍스트 값을 가져오고 콤마(,)를 제거
             String specificValue = specificValueElement.getAttribute("value").replaceAll(",","");
-            System.out.println("Specific value: " + specificValue);
             result[i] = Integer.parseInt(specificValue);
         }
         return result;
@@ -72,10 +71,11 @@ public class PaymentSystem {
             resultSet = statement.executeQuery("SELECT employeeNUM FROM employee WHERE employeeID = '" + EmployeeID +"'");
             resultSet.next();
             EmployeeNum = resultSet.getString("employeeNUM");
-            resultSet = statement.executeQuery("INSERT INTO payment(employeeNum, salary, netsalary, payment_Date)" + " VALUES(" + EmployeeNum + "," +
-                                                payment.getSalary() + "," + payment.getNetsalary() + ",'" + payment.getPaymentDate() + "," + UserID + "')");
+            resultSet = statement.executeQuery("INSERT INTO payment(employeeNUM, salary, netsalary, payment_Date, userID)" + " VALUES(" + EmployeeNum + "," +
+                                                payment.getSalary() + "," + payment.getNetsalary() + ",'" + payment.getPaymentDate() + "','" + UserID + "')");
         }
         catch (Exception e){
+            System.out.println(e);
             statement.close();
             connection.close();
             return false;

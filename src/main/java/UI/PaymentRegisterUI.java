@@ -302,11 +302,11 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
 
                 if (addResult) {
                     ShowSuccess();
+                    dispose();
                 }
                 else {
                     ShowWarning("잠시 후 다시 시도하세요.");
                 }
-                dispose();
                 break;
         }
     }
