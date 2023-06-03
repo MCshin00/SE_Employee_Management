@@ -238,6 +238,26 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
         return true;
     }
 
+    public boolean CheckDate(){
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setLenient(false);
+            sdf.parse(DateTextField.getText());
+        } catch (ParseException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean CheckDoCalc(){
+        try{
+            Integer.parseInt(SalarySumLabel.getText());
+        } catch (Exception ex){
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
@@ -277,19 +297,17 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
 
             case "등록" :
                 boolean addResult;
+                boolean dateResult = CheckDate();
+                boolean doCalcResult = CheckDoCalc();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
 
-                try{
-                    Integer.parseInt(SalarySumLabel.getText());
-                } catch (Exception ex){
+                if (!doCalcResult){
                     ShowWarning("계산이 실행되지 않았습니다.");
                     break;
                 }
 
-                try {
-                    sdf.parse(DateTextField.getText());
-                } catch (ParseException ex) {
+                if (!dateResult){
                     ShowWarning("날짜 형식이 잘못되었습니다.");
                     break;
                 }
@@ -306,6 +324,7 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
                 }
                 else {
                     ShowWarning("잠시 후 다시 시도하세요.");
+                    break;
                 }
                 break;
         }

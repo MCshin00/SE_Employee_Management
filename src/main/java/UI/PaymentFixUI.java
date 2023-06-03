@@ -240,6 +240,17 @@ public class PaymentFixUI extends JFrame implements ActionListener {
         }
         return true;
     }
+
+    public boolean CheckDate(){
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setLenient(false);
+            sdf.parse(DateTextField.getText());
+        } catch (ParseException ex) {
+            return false;
+        }
+        return true;
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
@@ -278,12 +289,11 @@ public class PaymentFixUI extends JFrame implements ActionListener {
 
             case "수정" :
                 boolean fixResult;
+                boolean dateResult = CheckDate();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
 
-                try {
-                    sdf.parse(DateTextField.getText());
-                } catch (ParseException ex) {
+                if (!dateResult){
                     ShowWarning("날짜 형식이 잘못되었습니다.");
                     break;
                 }
@@ -299,6 +309,7 @@ public class PaymentFixUI extends JFrame implements ActionListener {
                 }
                 else {
                     ShowWarning("잠시 후 다시 시도하세요.");
+                    break;
                 }
                 dispose();
                 break;
