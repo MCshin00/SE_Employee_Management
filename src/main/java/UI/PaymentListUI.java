@@ -13,10 +13,9 @@ import java.sql.SQLException;
 public class PaymentListUI extends JFrame {
 
     PaymentSystem paymentSystem = new PaymentSystem();
-    JTable EmployeeJTable;
+    JTable PaymentJTable;
     String ID;
     String Name;
-    JPanel panel = new JPanel();
     String[] header = {"기록번호", "급여 지급 날짜"};
 
     PaymentList paymentList;
@@ -33,6 +32,8 @@ public class PaymentListUI extends JFrame {
     public PaymentListUI(String ID, String Name) throws SQLException {
         this.ID = ID;
         this.Name = Name;
+
+        JPanel panel = new JPanel();
         panel.setLayout(null);
         PaymentListUI.MyMouseListener listener = new PaymentListUI.MyMouseListener();
 
@@ -49,10 +50,10 @@ public class PaymentListUI extends JFrame {
             model.addRow(new Object[]{payment.getPaymentNum(), payment.getPaymentDate()});
         }
 
-        EmployeeJTable = new JTable(model);
-        EmployeeJTable.addMouseListener(listener);
-        EmployeeJTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        JScrollPane jsp = new JScrollPane(EmployeeJTable);
+        PaymentJTable = new JTable(model);
+        PaymentJTable.addMouseListener(listener);
+        PaymentJTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JScrollPane jsp = new JScrollPane(PaymentJTable);
 
         Employee.setBounds(37, 25, 70, 25);
         EmployeeNameLabel.setBounds(100, 25, 140, 25);
@@ -75,9 +76,9 @@ public class PaymentListUI extends JFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2){
-                int row = EmployeeJTable.getSelectedRow();
-                String PaymentNum = EmployeeJTable.getModel().getValueAt(row, 0).toString();
-                String PaymentDate = EmployeeJTable.getModel().getValueAt(row, 1).toString();
+                int row = PaymentJTable.getSelectedRow();
+                String PaymentNum = PaymentJTable.getModel().getValueAt(row, 0).toString();
+                String PaymentDate = PaymentJTable.getModel().getValueAt(row, 1).toString();
                 try {
                     new PaymentSeeUI(PaymentNum, PaymentDate, ID, Name);
                     dispose();

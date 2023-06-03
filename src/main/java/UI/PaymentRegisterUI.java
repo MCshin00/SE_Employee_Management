@@ -16,7 +16,6 @@ import Entity.User;
 public class PaymentRegisterUI extends JFrame implements ActionListener {
     String EmployeeID;
     String EmployeeName;
-    Payment payment = new Payment();
     PaymentSystem paymentSystem = new PaymentSystem();
     JTextField SalaryTextField;
     JTextField DateTextField;
