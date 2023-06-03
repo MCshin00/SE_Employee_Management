@@ -275,30 +275,23 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
                         Deduction4Label.setText(Integer.toString(calcresult[1]));
                         DeductionSumLabel.setText(Integer.toString(calcresult[4]));
                         NetSalaryLabel.setText(Integer.toString(salary-calcresult[4]));
-
-                        payment.setSalary(Integer.parseInt(SalarySumLabel.getText()));
-                        payment.setNetsalary(Integer.parseInt(NetSalaryLabel.getText()));
-                        payment.setPaymentDate(DateTextField.getText());
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
-                    break;
                 }
                 else {
-                    if (SalaryTextField.getText().isEmpty()){
-                        ShowWarning("기본급 항목이 입력되지 않았습니다.");
-                        break;
-                    }
-                    else {
-                        ShowWarning("올바른 값을 입력하세요.");
-                        break;
-                    }
+                    ShowWarning("기본급 항목에 올바른 값을 입력하세요.");
                 }
+                break;
 
             case "등록" :
                 boolean addResult;
                 boolean dateResult = CheckDate();
                 boolean doCalcResult = CheckDoCalc();
+                int result_salary = Integer.parseInt(SalarySumLabel.getText());
+                int result_netsalary =  Integer.parseInt(NetSalaryLabel.getText());
+                String result_date = DateTextField.getText();
+
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
 
@@ -313,7 +306,7 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
                 }
 
                 try {
-                    addResult = paymentSystem.Payment_add(payment, User.CurrentUserID, this.EmployeeID);
+                    addResult = paymentSystem.Payment_add(result_salary, result_netsalary, result_date,User.CurrentUserID, this.EmployeeID);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

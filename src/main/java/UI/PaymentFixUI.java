@@ -14,8 +14,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class PaymentFixUI extends JFrame implements ActionListener {
-    Payment payment = new Payment();
     String ID;
+    int paymentNum;
     PaymentSystem paymentSystem = new PaymentSystem();
     JTextField SalaryTextField;
     JTextField DateTextField;
@@ -28,6 +28,7 @@ public class PaymentFixUI extends JFrame implements ActionListener {
     JLabel DeductionSumLabel;
     public PaymentFixUI(String[] SeeUI){
         this.ID = SeeUI[9];
+        this.paymentNum = Integer.parseInt(SeeUI[10]);
         JPanel panel1 = new JPanel();
         panel1.setLayout(null);
 
@@ -64,11 +65,6 @@ public class PaymentFixUI extends JFrame implements ActionListener {
         Deduction4Label = new JLabel(SeeUI[6]);
         JLabel DeductionSum = new JLabel("공제합계");
         DeductionSumLabel = new JLabel(SeeUI[7]);
-
-        payment.setPaymentNum(Integer.parseInt(SeeUI[10]));
-        payment.setSalary(Integer.parseInt(SalarySumLabel.getText()));
-        payment.setNetsalary(Integer.parseInt(NetSalaryLabel.getText()));
-        payment.setPaymentDate(DateTextField.getText());
 
         JLabel l1 = new JLabel();
         JLabel l2 = new JLabel();
@@ -268,28 +264,21 @@ public class PaymentFixUI extends JFrame implements ActionListener {
                         Deduction4Label.setText(Integer.toString(calcresult[1]));
                         DeductionSumLabel.setText(Integer.toString(calcresult[4]));
                         NetSalaryLabel.setText(Integer.toString(salary-calcresult[4]));
-
-                        payment.setSalary(Integer.parseInt(SalarySumLabel.getText()));
-                        payment.setNetsalary(Integer.parseInt(NetSalaryLabel.getText()));
-                        payment.setPaymentDate(DateTextField.getText());
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
-                    break;
                 }
                 else {
-                    if (SalaryTextField.getText().isEmpty()){
-                        ShowWarning("기본급 항목이 입력되지 않았습니다.");
-                    }
-                    else {
-                        ShowWarning("올바른 값을 입력하세요.");
-                    }
-                    break;
+                    ShowWarning("기본급 항목에 올바른 값을 입력하세요.");
                 }
+                break;
 
             case "수정" :
                 boolean fixResult;
                 boolean dateResult = CheckDate();
+                int result_salary = Integer.parseInt(SalarySumLabel.getText());
+                int result_netsalary =  Integer.parseInt(NetSalaryLabel.getText());
+                String result_date = DateTextField.getText();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
 
@@ -299,7 +288,7 @@ public class PaymentFixUI extends JFrame implements ActionListener {
                 }
 
                 try {
-                    fixResult = paymentSystem.Payment_fix(payment, User.CurrentUserID, this.ID);
+                    fixResult = paymentSystem.Payment_fix(result_salary, result_netsalary, result_date, paymentNum,User.CurrentUserID, this.ID);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

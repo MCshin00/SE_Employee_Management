@@ -91,15 +91,15 @@ public class PaymentSystem {
         return paymentList;
     }
 
-    public boolean Payment_add(Payment payment, String UserID, String EmployeeID) throws SQLException {
+    public boolean Payment_add(int salary, int netsalary, String paymentDate, String UserID, String EmployeeID) throws SQLException {
         String url = "jdbc:mariadb://localhost:3306/softengi_db";
         String userName = "root";
         String password = "c3g9h4c3";
         String EmployeeNum;
-        Payment payment_todb = new Payment();
-        payment_todb.setSalary(payment.getSalary());
-        payment_todb.setNetsalary(payment.getNetsalary());
-        payment_todb.setPaymentDate(payment.getPaymentDate());
+        Payment payment = new Payment();
+        payment.setSalary(salary);
+        payment.setNetsalary(netsalary);
+        payment.setPaymentDate(paymentDate);
 
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
@@ -110,7 +110,7 @@ public class PaymentSystem {
             resultSet.next();
             EmployeeNum = resultSet.getString("employeeNUM");
             resultSet = statement.executeQuery("INSERT INTO payment(employeeNUM, salary, netsalary, payment_Date, userID)" + " VALUES(" + EmployeeNum + "," +
-                                                payment_todb.getSalary() + "," + payment_todb.getNetsalary() + ",'" + payment_todb.getPaymentDate() + "','" + UserID + "')");
+                                                payment.getSalary() + "," + payment.getNetsalary() + ",'" + payment.getPaymentDate() + "','" + UserID + "')");
         }
         catch (Exception e){
             System.out.println(e);
@@ -148,15 +148,16 @@ public class PaymentSystem {
         return payment;
     }
 
-    public boolean Payment_fix(Payment payment, String UserID, String EmployeeID) throws SQLException {
+    public boolean Payment_fix(int salary, int netsalary, String paymentDate, int paymentNum,String UserID, String EmployeeID) throws SQLException {
         String url = "jdbc:mariadb://localhost:3306/softengi_db";
         String userName = "root";
         String password = "c3g9h4c3";
         String EmployeeNum;
-        Payment payment_todb = new Payment();
-        payment_todb.setSalary(payment.getSalary());
-        payment_todb.setNetsalary(payment.getNetsalary());
-        payment_todb.setPaymentDate(payment.getPaymentDate());
+        Payment payment= new Payment();
+        payment.setSalary(salary);
+        payment.setNetsalary(netsalary);
+        payment.setPaymentDate(paymentDate);
+        payment.setPaymentNum(paymentNum);
 
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
@@ -167,7 +168,7 @@ public class PaymentSystem {
             resultSet.next();
             EmployeeNum = resultSet.getString("employeeNUM");
             resultSet = statement.executeQuery("UPDATE payment SET salary = " + payment.getSalary() + ", netsalary = " + payment.getNetsalary()
-                    + ", payment_Date = '" + payment_todb.getPaymentDate() + "' WHERE paymentNUM = " + payment_todb.getPaymentNum() + " AND employeeNUM = " + EmployeeNum + " AND userID = '" + UserID + "'");
+                    + ", payment_Date = '" + payment.getPaymentDate() + "' WHERE paymentNUM = " + payment.getPaymentNum() + " AND employeeNUM = " + EmployeeNum + " AND userID = '" + UserID + "'");
         }
         catch (Exception e){
             statement.close();
