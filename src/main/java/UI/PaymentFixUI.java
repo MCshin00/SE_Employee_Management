@@ -26,14 +26,16 @@ public class PaymentFixUI extends JFrame implements ActionListener {
     JLabel Deduction3Label;
     JLabel Deduction4Label;
     JLabel DeductionSumLabel;
+    JButton CalculateButton;
+    JButton FixButton;
     public PaymentFixUI(String[] SeeUI){
         this.ID = SeeUI[9];
         this.paymentNum = Integer.parseInt(SeeUI[10]);
         JPanel panel1 = new JPanel();
         panel1.setLayout(null);
 
-        JButton CalculateButton = new JButton("계산");
-        JButton FixButton = new JButton("수정");
+        CalculateButton = new JButton("계산");
+        FixButton = new JButton("수정");
 
         CalculateButton.addActionListener(this);
         FixButton.addActionListener(this);

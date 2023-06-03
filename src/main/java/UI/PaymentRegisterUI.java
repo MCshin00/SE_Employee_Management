@@ -27,14 +27,17 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
     JLabel Deduction4Label;
     JLabel DeductionSumLabel;
 
+    JButton CalculateButton;
+    JButton RegisterButton;
+
     public PaymentRegisterUI(String ID, String Name) {
         this.EmployeeID = ID;
         this.EmployeeName = Name;
         JPanel panel1 = new JPanel();
         panel1.setLayout(null);
 
-        JButton CalculateButton = new JButton("계산");
-        JButton RegisterButton = new JButton("등록");
+        CalculateButton = new JButton("계산");
+        RegisterButton = new JButton("등록");
         CalculateButton.addActionListener(this);
         RegisterButton.addActionListener(this);
 

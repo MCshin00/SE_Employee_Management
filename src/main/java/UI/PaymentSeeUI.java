@@ -22,6 +22,8 @@ public class PaymentSeeUI extends JFrame implements ActionListener {
     JLabel DeductionSumLabel;
     JLabel EmployeeNameLabel;
     JLabel DateLabel;
+    JButton FixButton;
+    JButton DeleteButton;
 
     public PaymentSeeUI(String PaymentNum, String PaymentDate, String ID, String Name) throws SQLException, InterruptedException {
         this.ID = ID;
@@ -31,8 +33,8 @@ public class PaymentSeeUI extends JFrame implements ActionListener {
         PaymentSystem paymentSystem = new PaymentSystem();
         payment = paymentSystem.Payment_see(Integer.parseInt(PaymentNum), User.CurrentUserID);
 
-        JButton FixButton = new JButton("수정");
-        JButton DeleteButton = new JButton("삭제");
+        FixButton = new JButton("수정");
+        DeleteButton = new JButton("삭제");
 
         FixButton.addActionListener(this);
         DeleteButton.addActionListener(this);
@@ -227,6 +229,7 @@ public class PaymentSeeUI extends JFrame implements ActionListener {
                 new PaymentFixUI(new String[]{EmployeeNameLabel.getText(), DateLabel.getText(), Integer.toString(payment.getSalary()), Deduction1Label.getText(), Deduction2Label.getText(),
                         Deduction3Label.getText(), Deduction4Label.getText(), DeductionSumLabel.getText(),Integer.toString(payment.getNetsalary()),
                         this.ID, Integer.toString(payment.getPaymentNum())});
+                dispose();
                 break;
 
             case "삭제":

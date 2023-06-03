@@ -19,11 +19,10 @@ public class EmployeeListUI extends JFrame implements ActionListener {
     EmployeeSystem employeeSystem = new EmployeeSystem();
     String calledUI;
     JTable EmployeeJTable;
-    JPanel panel = new JPanel();
     JLabel EmployeenameLabel = new JLabel("사원명 : ");
     JTextField EmployeenameTextField = new JTextField(5);
     JButton SearchButton = new JButton("검색");
-    String header[] = {"ID", "이름"};
+    String[] header = {"ID", "이름"};
     DefaultTableModel model = new DefaultTableModel(header, 0){
         public boolean isCellEditable(int row, int column) {
             if (column >= 0) {
@@ -38,6 +37,7 @@ public class EmployeeListUI extends JFrame implements ActionListener {
         this.calledUI = calledUI;
         SearchButton.addActionListener(this);
         MyMouseListener listener = new MyMouseListener();
+        JPanel panel = new JPanel();
         panel.setLayout(null);
 
         //사원 객체 배열 엔티티 클래스 객체 생성 및 사원목록 배열 get
