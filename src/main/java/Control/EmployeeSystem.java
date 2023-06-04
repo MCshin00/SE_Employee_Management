@@ -52,8 +52,6 @@ public class EmployeeSystem {
             Employee employee = new Employee();
             employee.setID(resultSet.getString("employeeID"));
             employee.setName(resultSet.getString("Name"));
-            employee.setAge(resultSet.getInt("Age"));
-            employee.setStartDate(resultSet.getString("startDate"));
             employeeList.getEmployeeArray()[i] = employee;
             i++;
         }
