@@ -288,24 +288,25 @@ public class PaymentRegisterUI extends JFrame implements ActionListener {
 
             case "등록" :
                 boolean addResult;
-                boolean dateResult = CheckDate();
-                boolean doCalcResult = CheckDoCalc();
-                int result_salary = Integer.parseInt(SalarySumLabel.getText());
-                int result_netsalary =  Integer.parseInt(NetSalaryLabel.getText());
+                int result_salary;
+                int result_netsalary;
                 String result_date = DateTextField.getText();
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
 
-                if (!doCalcResult){
+                if (!CheckDoCalc()){
                     ShowWarning("계산이 실행되지 않았습니다.");
                     break;
                 }
 
-                if (!dateResult){
+                if (!CheckDate()){
                     ShowWarning("날짜 형식이 잘못되었습니다.");
                     break;
                 }
+
+                result_salary = Integer.parseInt(SalarySumLabel.getText());
+                result_netsalary  =  Integer.parseInt(NetSalaryLabel.getText());
 
                 try {
                     addResult = paymentSystem.Payment_add(result_salary, result_netsalary, result_date,User.CurrentUserID, this.EmployeeID);
