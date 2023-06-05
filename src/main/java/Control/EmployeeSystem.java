@@ -23,8 +23,6 @@ public class EmployeeSystem {
             Employee employee = new Employee();
             employee.setID(resultSet.getString("employeeID"));
             employee.setName(resultSet.getString("Name"));
-            employee.setAge(resultSet.getInt("Age"));
-            employee.setStartDate(resultSet.getString("startDate"));
             employeeList.getEmployeeArray()[i] = employee;
             i++;
         }
@@ -45,7 +43,8 @@ public class EmployeeSystem {
 
         Connection connection = DriverManager.getConnection(url, userName, password);
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select * from employee where userID='" + User.CurrentUserID + "'" + "and Name like " + "'%" + EmployeeName + "%'");
+        ResultSet resultSet = statement.executeQuery("select * from employee where userID='" + User.CurrentUserID + "'" +
+                                                    "and Name like " + "'%" + EmployeeName + "%'");
 
         while(resultSet.next()){
             if (i==100) break;

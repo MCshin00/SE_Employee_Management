@@ -77,8 +77,6 @@ public class PaymentSystem {
             if (i==100) break;
             Payment payment = new Payment();
             payment.setPaymentNum(Integer.parseInt(resultSet.getString("paymentNUM")));
-            payment.setSalary(Integer.parseInt(resultSet.getString("salary")));
-            payment.setNetsalary(Integer.parseInt(resultSet.getString("netsalary")));
             payment.setPaymentDate(resultSet.getString("payment_Date"));
             paymentList.getPaymentArray()[i] = payment;
             i++;

@@ -277,14 +277,13 @@ public class PaymentFixUI extends JFrame implements ActionListener {
 
             case "수정" :
                 boolean fixResult;
-                boolean dateResult = CheckDate();
                 int result_salary = Integer.parseInt(SalarySumLabel.getText());
                 int result_netsalary =  Integer.parseInt(NetSalaryLabel.getText());
                 String result_date = DateTextField.getText();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
 
-                if (!dateResult){
+                if (!CheckDate()){
                     ShowWarning("날짜 형식이 잘못되었습니다.");
                     break;
                 }
